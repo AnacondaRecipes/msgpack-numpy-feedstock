@@ -20,7 +20,7 @@ requirements:
   run:
     - python
     - numpy >=1.9.0
-    - msgpack-python >=0.3.0
+    - msgpack-python >=0.5.2
 
 test:
   imports:
