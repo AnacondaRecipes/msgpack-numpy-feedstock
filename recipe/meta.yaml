@@ -1,34 +1,44 @@
-{% set version = "0.4.7.1" %}
+{% set name = "msgpack-numpy" %}
+{% set version = "0.4.8" %}
 
 package:
-  name: msgpack-numpy
+  name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/m/msgpack-numpy/msgpack-numpy-{{ version }}.tar.gz
-  sha256: 7eaf51acf82d7c467d21aa71df94e1c051b2055e54b755442051b474fa7cf5e1
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: c667d3180513422f9c7545be5eec5d296dcbb357e06f72ed39cc683797556e69
 
 build:
   number: 0
-  noarch: python
-  script: "{{ PYTHON }} -m pip install . -vv"
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
 
 requirements:
   host:
     - python
     - pip
+    - setuptools
+    - wheel
   run:
     - python
-    - numpy >=1.9.0
+    - numpy {{ numpy }}
     - msgpack-python >=0.5.2
 
 test:
+  source_files:
+    - tests.py
   imports:
     - msgpack_numpy
+  requires:
+    - pip
+  commands:
+    - pip check
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+    - python -m unittest -v tests.py
 
 about:
   home: https://github.com/lebedov/msgpack-numpy
-  license: BSD 3-Clause
+  license: BSD-3-Clause
   license_family: BSD
   license_file: LICENSE.md
   summary: Numpy data serialization using msgpack
@@ -37,7 +47,7 @@ about:
     serialization and deserialization of numerical and array data types
     provided by numpy using the highly efficient msgpack format. Serialization
     of Python's native complex data types is also supported.
-  doc_url: https://pypi.python.org/pypi/msgpack-numpy
+  doc_url: https://pypi.org/pypi/msgpack-numpy
   dev_url: https://github.com/lebedov/msgpack-numpy
 
 extra:
